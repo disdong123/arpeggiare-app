@@ -2,7 +2,9 @@ import 'package:arpeggiare/module/home/widget/posts.widget.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  final Future<List<PostResponse>> posts = PostRepository.getPosts(0);
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +18,24 @@ class HomePage extends StatelessWidget {
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
           ),
         ),
-        body: Column(
-          children: [PostsWidget()],
+        body: FutureBuilder(
+          future: posts,
+          builder: (BuildContext context,
+              AsyncSnapshot<List<PostResponse>> snapshot) {
+            if (snapshot.hasData) {
+              return Column(
+                children: [
+                  SizedBox(height: 30),
+                  Expanded(
+                    child: PostsWidget(posts: snapshot.data!),
+                  ),
+                ],
+              );
+            }
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          },
         ));
   }
 }
