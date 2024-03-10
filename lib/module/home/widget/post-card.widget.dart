@@ -1,3 +1,4 @@
+import 'package:arpeggiare/module/home/widget/post-detail.widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -10,65 +11,74 @@ class PostCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 7,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15), // 컨테이너 모서리를 둥글게 합니다.
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 이미지 리스트가 있을 경우 첫 번째 이미지를 표시합니다.
-            if (post.images.isNotEmpty)
-              Image.network(
-                post.images.first,
-                fit: BoxFit.cover,
-                height: 200,
-                width: double.infinity,
-              ),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    post.title,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    '${post.author}, ${_formatDate(post.createdAt)}',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    post.content,
-                    style: TextStyle(fontSize: 16),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => VideoViewerWidget(post: post)));
+      },
+      child: Container(
+        margin: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 1,
+              blurRadius: 7,
+              offset: Offset(0, 3),
             ),
-            if (post.video != null)
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                alignment: Alignment.centerLeft,
-                child:
-                    Icon(Icons.play_circle_fill, size: 40, color: Colors.red),
-              ),
           ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15), // 컨테이너 모서리를 둥글게 합니다.
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 이미지 리스트가 있을 경우 첫 번째 이미지를 표시합니다.
+              if (post.images.isNotEmpty)
+                Image.network(
+                  post.images.first,
+                  fit: BoxFit.cover,
+                  height: 200,
+                  width: double.infinity,
+                ),
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      post.title,
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      '${post.author}, ${_formatDate(post.createdAt)}',
+                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      post.content,
+                      style: TextStyle(fontSize: 16),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              if (post.video != null)
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  alignment: Alignment.centerLeft,
+                  child:
+                      Icon(Icons.play_circle_fill, size: 40, color: Colors.red),
+                ),
+            ],
+          ),
         ),
       ),
     );
