@@ -1,74 +1,72 @@
 import 'dart:ffi';
 
+import 'package:arpeggiare/module/home/provider/post.provider.dart';
+import 'package:arpeggiare/module/home/widget/post-card.widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
-class PostRepository {
-  static var posts = List.generate(100, (index) => PostResponse("hello"));
+import '../client/post.client.dart';
 
-  static Future<List<PostResponse>> getPosts(page) async {
-    await Future.delayed(Duration(seconds: 1));
-    return posts;
-    // return posts.sublist(page, 10);
-  }
+class PostsWidget extends StatefulWidget {
+  const PostsWidget({super.key});
+
+  @override
+  State<PostsWidget> createState() => _PostsWidgetState();
 }
 
-class PostsWidget extends StatelessWidget {
-  const PostsWidget({super.key, required this.posts});
-  final List<PostResponse> posts;
+class _PostsWidgetState extends State<PostsWidget> {
+  var page = 0;
+  var limit = 10;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.microtask(() {
+      Provider.of<PostProvider>(context, listen: false).request(page, limit);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<PostProvider>(context);
+    final posts = provider.posts;
+    final loading = provider.isLoading;
+
+    if (loading && posts.isEmpty) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    if (!loading && posts.isEmpty) {
+      return Center(child: Text('No posts'));
+    }
+
     return ListView.separated(
       scrollDirection: Axis.vertical,
-      itemCount: posts.length,
+      itemCount: posts.length + 1,
       itemBuilder: (BuildContext context, int index) {
-        return PostWidget(post: posts[index]);
+        if (index < posts.length) {
+          return PostCardWidget(post: posts[index]);
+        }
+
+        if (!provider.isLoading) {
+          Future.microtask(() {
+            page++;
+            provider.request(page, limit);
+          });
+        }
+
+        if (provider.hasMore) {
+          return Center(child: CircularProgressIndicator());
+        } else {
+          return Center(child: Text('No more posts'));
+        }
       },
       separatorBuilder: (BuildContext context, int index) {
         return SizedBox(height: 50);
       },
-    );
-  }
-}
-
-class PostResponse {
-  final String title;
-
-  PostResponse(this.title);
-}
-
-class PostWidget extends StatelessWidget {
-  const PostWidget({super.key, required this.post});
-  final PostResponse post;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3),
-                  )
-                ]),
-            child: Text(
-              post.title,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-            )),
-        SizedBox(height: 30),
-        Container(
-          child: Text(
-            post.title,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-          ),
-        ),
-      ],
     );
   }
 }

@@ -1,4 +1,6 @@
+import 'package:arpeggiare/module/home/provider/post.provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'module/home/home.page.dart';
 
@@ -10,8 +12,9 @@ class ArpeggiareApp extends StatelessWidget {
     return MaterialApp(
       title: 'Arpeggiare',
       theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        // useMaterial3: true,
       ),
       home: HomePage(),
     );
@@ -19,5 +22,9 @@ class ArpeggiareApp extends StatelessWidget {
 }
 
 void main() {
-  runApp(const ArpeggiareApp());
+  runApp(
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (context) => PostProvider()),
+    ], child: ArpeggiareApp()),
+  );
 }
