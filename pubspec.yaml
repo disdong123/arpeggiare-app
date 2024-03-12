@@ -39,6 +39,11 @@ dependencies:
   provider: ^6.1.2
   intl: ^0.19.0
   video_player: ^2.8.3
+  flutter_naver_map: ^1.2.1
+  geolocator: ^11.0.0
+  permission_handler: ^11.3.0
+  app_settings: ^5.1.1
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +71,8 @@ flutter:
   assets:
    - assets/images/
    - assets/videos/
+   - .env
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
